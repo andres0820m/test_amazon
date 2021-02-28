@@ -5,13 +5,23 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import NoSuchElementException
-
+from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
 _COUNTRIES = ['USD', 'COP']
 
 
 class AmazonWrapped:
     def __init__(self):
-        self.web_driver = webdriver.Chrome(ChromeDriverManager().install())
+
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_prefs = {}
+        chrome_options.experimental_options["prefs"] = chrome_prefs
+        chrome_prefs["profile.default_content_settings"] = {"images": 2}
+        self.web_driver = webdriver.Chrome(chrome_options=chrome_options)
+        #self.web_driver = webdriver.Chrome(ChromeDriverManager().install())
         self.action = ActionChains(self.web_driver)
 
     def login(self, email: str, password: str):
@@ -53,7 +63,7 @@ class AmazonWrapped:
             data = self.web_driver.find_element_by_xpath('//*[@id="gc-current-balance"]').get_attribute(
                 'innerHTML').replace('\n', '').strip()
         except:
-            data = self.web_driver.find_element_by_xpath('//*[@id="gc-ui-balance-gc-balance-value"]' ).get_attribute(
+            data = self.web_driver.find_element_by_xpath('//*[@id="gc-ui-balance-gc-balance-value"]').get_attribute(
                 'innerHTML').replace('\n', '').strip()
         for country in _COUNTRIES:
             data = data.strip(country)
@@ -70,3 +80,13 @@ class AmazonWrapped:
             self.web_driver.find_element_by_xpath('//*[@id="alertRedemptionSuccess"]')
             val = self.get_card_balance()
             return True, val
+
+if __name__ == "__main__":
+    amazon = AmazonWrapped()
+    amazon.login(email="andres0820m@gmail.com", password="Andres5376839")
+    amazon.move_to_cards()
+    amazon.check_cards_balance()
+    amazon.redeem_card("andres-123")
+    value = amazon.get_actual_balance()
+    status, val = amazon.check_if_redeem()
+    print(value, status, val)
