@@ -23,7 +23,7 @@ class AmazonWrapped:
         chrome_options.experimental_options["prefs"] = chrome_prefs
         chrome_prefs["profile.default_content_settings"] = {"images": 2}
         self.web_driver = webdriver.Remote(
-            command_executor='http://127.0.0.1:4444/wd/hub',
+            command_executor='selenium/standalone-chrome:4.0.0-beta-1-20210215/wd/hub',
             desired_capabilities=DesiredCapabilities.CHROME)
         #self.web_driver = webdriver.Chrome(ChromeDriverManager().install())
         self.action = ActionChains(self.web_driver)
