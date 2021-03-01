@@ -16,7 +16,7 @@ services:
     volumes:
       - test_db_postgres_data:/var/lib/postgresql/data/
     ports:
-      - 8000:8000
+      - 80:8000
     depends_on:
       - test-db
 volumes:
