@@ -7,6 +7,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
+import time
 _COUNTRIES = ['USD', 'COP']
 
 
@@ -35,7 +36,7 @@ class AmazonWrapped:
             action.move_to_element(first_level_menu).perform()
         except Exception as e:
             print(e)
-
+        time.sleep(3)
         self.web_driver.find_element_by_xpath('//*[@id="nav-flyout-ya-signin"]/a/span').click()
         self.web_driver.find_element_by_xpath('//*[@id="ap_email"]').send_keys(email)
         self.web_driver.find_element_by_xpath('//*[@id="continue"]').click()
