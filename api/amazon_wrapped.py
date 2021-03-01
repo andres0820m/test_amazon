@@ -8,6 +8,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import time
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 _COUNTRIES = ['USD', 'COP']
 
 
@@ -21,7 +22,9 @@ class AmazonWrapped:
         chrome_prefs = {}
         chrome_options.experimental_options["prefs"] = chrome_prefs
         chrome_prefs["profile.default_content_settings"] = {"images": 2}
-        self.web_driver = webdriver.Chrome(chrome_options=chrome_options)
+        self.web_driver = webdriver.Remote(
+            command_executor='http://127.0.0.1:4444/wd/hub',
+            desired_capabilities=DesiredCapabilities.CHROME)
         #self.web_driver = webdriver.Chrome(ChromeDriverManager().install())
         self.action = ActionChains(self.web_driver)
 
