@@ -9,23 +9,34 @@ from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import time
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+
 _COUNTRIES = ['USD', 'COP']
 
 
 class AmazonWrapped:
     def __init__(self):
 
+        '''
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument('window-size=1400,2100')
+        chrome_options.add_argument('--disable-gpu')
         chrome_prefs = {}
         chrome_options.experimental_options["prefs"] = chrome_prefs
         chrome_prefs["profile.default_content_settings"] = {"images": 2}
-        self.web_driver = webdriver.Remote(
-            command_executor='selenium/standalone-chrome:4.0.0-beta-1-20210215/wd/hub',
-            desired_capabilities=DesiredCapabilities.CHROME)
-        #self.web_driver = webdriver.Chrome(ChromeDriverManager().install())
+        self.web_driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+        '''
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-gpu')
+        self.web_driver = webdriver.Chrome(ChromeDriverManager().install(),chrome_options=chrome_options)
+        #self.web_driver = webdriver.Chrome(chrome_options=chrome_options)
+        self.web_driver.implicitly_wait(10)
+
         self.action = ActionChains(self.web_driver)
 
     def login(self, email: str, password: str):
@@ -50,7 +61,7 @@ class AmazonWrapped:
         self.web_driver.find_element_by_xpath('//*[@id="asv-gclp-balance-widget-desktop"]/ul/li[1]/span/a').click()
 
     def move_to_cards(self):
-        self.web_driver.find_element_by_xpath('//*[@id="nav-xshop"]/a[6]').click()
+        self.web_driver.find_element_by_xpath('//*[@id="nav-xshop"]/a[2]').click()
 
     def redeem_card(self, gift_card: str):
         self.web_driver.find_element_by_xpath('//*[@id="a-autoid-1-announce"]').click()
@@ -84,6 +95,7 @@ class AmazonWrapped:
             self.web_driver.find_element_by_xpath('//*[@id="alertRedemptionSuccess"]')
             val = self.get_card_balance()
             return True, val
+
 
 if __name__ == "__main__":
     amazon = AmazonWrapped()
